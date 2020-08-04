@@ -1,9 +1,6 @@
-FROM alpine:3.12.0 as builder
+FROM 0x01be/alpine:edge as builder
 
-RUN apk add --no-cache --virtual build-dependencies \
-    --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
-    --repository http://dl-cdn.alpinelinux.org/alpine/edge/community \
-    --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+RUN apk add --no-cache --virtual iverilog-build-dependencies \
     git \
     build-base \
     autoconf \
@@ -11,7 +8,7 @@ RUN apk add --no-cache --virtual build-dependencies \
     flex \
     bison
 
-RUN git clone git://github.com/steveicarus/iverilog.git /iverilog
+RUN git clone --depth 1 git://github.com/steveicarus/iverilog.git /iverilog
 
 WORKDIR /iverilog
 
@@ -20,7 +17,7 @@ RUN ./configure --prefix /opt/iverilog/
 RUN make
 RUN make install
 
-FROM alpine:3.12.0
+FROM 0x01be/alpine:edge
 
 COPY --from=builder /opt/iverilog/ /opt/iverilog/
 
