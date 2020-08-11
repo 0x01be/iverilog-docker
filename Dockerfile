@@ -1,4 +1,4 @@
-FROM 0x01be/alpine:edge as builder
+FROM alpine as builder
 
 RUN apk add --no-cache --virtual iverilog-build-dependencies \
     git \
@@ -17,8 +17,12 @@ RUN ./configure --prefix /opt/iverilog/
 RUN make
 RUN make install
 
-FROM 0x01be/alpine:edge
+FROM alpine
 
 COPY --from=builder /opt/iverilog/ /opt/iverilog/
 
 ENV PATH $PATH:/opt/iverilog/bin/
+
+VOLUME /workspace
+WORKDIR /workspace
+
