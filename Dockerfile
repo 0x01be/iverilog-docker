@@ -20,7 +20,7 @@ RUN make install
 
 FROM alpine
 
-COPY --from=builder /opt/iverilog/ /opt/iverilog/
+COPY --from=build /opt/iverilog/ /opt/iverilog/
 
 RUN apk add --no-cache --virtual iverilog-runtime-dependencies \
     libstdc++
