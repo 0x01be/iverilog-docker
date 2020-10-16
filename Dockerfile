@@ -1,4 +1,4 @@
-FROM alpine as builder
+FROM alpine as build
 
 RUN apk add --no-cache --virtual iverilog-build-dependencies \
     git \
@@ -8,7 +8,8 @@ RUN apk add --no-cache --virtual iverilog-build-dependencies \
     flex \
     bison
 
-RUN git clone --depth 1 git://github.com/steveicarus/iverilog.git /iverilog
+ENV IVERILOG_REVISION master
+RUN git clone --depth 1 --branch ${IVERILOG_REVISION} git://github.com/steveicarus/iverilog.git /iverilog
 
 WORKDIR /iverilog
 
@@ -21,8 +22,18 @@ FROM alpine
 
 COPY --from=builder /opt/iverilog/ /opt/iverilog/
 
+RUN apk add --no-cache --virtual iverilog-runtime-dependencies \
+    libstdc++
+
+RUN adduser -D -u 1000 iverilog
+
+WORKDIR /workspace
+
+RUN chown iverilog:iverilog /workspace
+
+USER iverilog
+
 ENV PATH $PATH:/opt/iverilog/bin/
 
-VOLUME /workspace
-WORKDIR /workspace
+CMD ["iverilog", "-h"]
 
