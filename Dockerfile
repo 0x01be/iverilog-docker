@@ -19,6 +19,8 @@ FROM 0x01be/base
 
 COPY --from=build /opt/iverilog/ /opt/iverilog/
 
+WORKDIR /workspace
+
 RUN apk add --no-cache --virtual iverilog-runtime-dependencies \
     libstdc++ &&\
     adduser -D -u 1000 iverilog &&\
@@ -26,5 +28,4 @@ RUN apk add --no-cache --virtual iverilog-runtime-dependencies \
 
 USER iverilog
 ENV PATH=${PATH}:/opt/iverilog/bin/
-WORKDIR /workspace
 
